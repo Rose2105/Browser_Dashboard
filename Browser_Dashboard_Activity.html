@@ -1,0 +1,226 @@
+<!-- README:
+This HTML file is a Browser Environment Dashboard that demonstrates the use of JavaScript with browser, document, and window objects.
+It includes:
+- Student and course profile
+- Browser and screen information
+- Page URL/title management
+- Navigation controls
+- Dynamic background color based on screen size -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Browser Environment Dashboard</title>
+  <style>
+    /* General page layout and font */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Header styling for profile section */
+    header {
+      background-color: #ffffff;
+      color: rgb(0, 0, 0);
+      padding: 20px;
+      text-align: left;
+      border-bottom: 4px solid #333;
+    }
+
+    /* Main container styling */
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #f4f4f4;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Styling for dark theme */
+    .dark-theme .container {
+      background-color: #333;
+      color: white;
+    }
+
+    h1, h2 {
+      text-align: center;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    button {
+      margin: 8px 5px;
+      padding: 10px 15px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      border-radius: 10px;
+      background-color: grey;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+      color: white;
+    }
+
+    .dark-theme button:hover {
+      background-color: #0099cc;
+      color: white;
+    }
+
+    .info-box p {
+      margin: 5px 0;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Part 0: Student Profile -->
+  <header>
+    <div class="container">
+    <h1>STUDENT PROFILE</h1>
+    <p><strong>Complete Name:</strong> Mary Rose Oriana</p>
+    <p><strong>Sex:</strong> Female</p>
+    <p><strong>Address:</strong> Taytay, Goa, Camarines Sur</p>
+    <p><strong>Course, Year, and Section:</strong> BSIT 2B</p>
+    <p><strong>Name of School:</strong> Partido State University</p>
+    <p><strong>Semester and Academic Year:</strong> 2nd Semester, AY 2024–2025</p>
+    <p><strong>Course Code and Title:</strong> PF2 Event-Driven Programming</p>
+    <p><strong>Name of Subject Instructor:</strong> Mr. Arjay Abio</p>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+
+    <!-- Part A: Browser Information -->
+    <div class="section">
+      <h2>Browser Information</h2>
+      <div class="info-box" id="browserInfo"></div>
+    </div>
+
+    <!-- Part B: Page Info and Controls -->
+    <div class="section">
+      <h2>Page Information</h2>
+      <p><strong>Current URL:</strong> <span id="currentURL"></span></p>
+      <p><strong>Hostname:</strong> <span id="hostname"></span></p>
+      <p><strong>Page Title:</strong> <span id="pageTitle"></span></p>
+      <button id="changeTitle">Change Page Title</button>
+    </div>
+
+    <!-- Part C: Navigation Controls -->
+    <div class="section">
+      <h2>Navigation Controls</h2>
+      <button id="goBack">Go Back</button>
+      <button id="goForward">Go Forward</button>
+      <button id="reloadPage">Reload Page</button>
+      <button id="changeLocation">Change Location</button>
+      <button id="windowSize">Show Window Size</button>
+      <button id="toggleTheme">Toggle Dark/Light Theme</button>
+      <button id="returnHome">Return Homepage</button>
+    </div>
+
+  </div>
+
+  <script>
+    // Display various browser-related information using the navigator and screen objects
+    function displayBrowserInfo() {
+      const info = document.getElementById("browserInfo");
+      info.innerHTML = `
+        <p><strong>Browser:</strong> ${navigator.appName}</p>
+        <p><strong>Version:</strong> ${navigator.appVersion}</p>
+        <p><strong>Platform (OS):</strong> ${navigator.platform}</p>
+        <p><strong>Java Enabled:</strong> ${navigator.javaEnabled()}</p>
+        <p><strong>Screen Resolution:</strong> ${screen.width} x ${screen.height}</p>
+        <p><strong>Available Screen Size:</strong> ${screen.availWidth} x ${screen.availHeight}</p>
+        <p><strong>Color Depth:</strong> ${screen.colorDepth}</p>
+      `;
+    }
+
+    // Display current URL, hostname, and document title
+    function displayPageInfo() {
+      document.getElementById('currentURL').textContent = window.location.href;
+      document.getElementById('hostname').textContent = window.location.hostname;
+      document.getElementById('pageTitle').textContent = document.title;
+    }
+
+    // Allow user to dynamically change the document title
+    function changeTitle() {
+      const newTitle = prompt(`Current Title: "${document.title}". Enter a new title:`);
+      if (newTitle) {
+        document.title = newTitle;
+        document.getElementById('pageTitle').textContent = newTitle;
+        localStorage.setItem('title', newTitle);
+      }
+    }
+
+    // Set background color based on window width
+    function updateBackground() {
+      const width = window.innerWidth;
+      if (width < 600) {
+        document.body.style.backgroundColor = 'blue';      // Mobile
+      } else if (width >= 600 && width <= 991) {
+        document.body.style.backgroundColor = 'green';     // Tablet
+      } else {
+        document.body.style.backgroundColor = 'orange';    // Desktop
+      }
+    }
+
+    // When page loads, apply stored theme and title, and update displays
+    window.onload = function () {
+      if (localStorage.getItem('theme') === 'dark') document.body.classList.add("dark-theme");
+      if (localStorage.getItem('title')) {
+        document.title = localStorage.getItem('title');
+      }
+
+      displayBrowserInfo();
+      displayPageInfo();
+      updateBackground();
+    };
+
+    // Update background dynamically on window resize
+    window.onresize = updateBackground;
+
+    // Event Listeners for Buttons
+    document.getElementById("changeTitle").addEventListener("click", changeTitle);
+
+    document.getElementById("goBack").addEventListener("click", () => {
+      if (window.history.length > 1) history.back();
+      else alert("No previous page in history.");
+    });
+
+    document.getElementById("goForward").addEventListener("click", () => history.forward());
+
+    document.getElementById("reloadPage").addEventListener("click", () => location.reload());
+
+    document.getElementById("changeLocation").addEventListener("click", function () {
+                const newURL = prompt("Enter a URL to navigate:", "https://www.google.com");
+                if (newURL) location.href = newURL;
+            });
+    document.getElementById("windowSize").addEventListener("click", () => {
+      alert(`Window Size:\nWidth = ${window.innerWidth}, Height = ${window.innerHeight}`);
+    });
+
+    // Toggle dark/light theme and save preference
+    document.getElementById("toggleTheme").addEventListener("click", () => {
+      const isDark = document.body.classList.toggle("dark-theme");
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+    });
+
+    document.getElementById("returnHome").addEventListener("click", function () {
+      window.location.href = "index.html";
+    });
+
+  </script>
+
+</body>
+</html>
